@@ -1,5 +1,7 @@
 # react-component-converter README
 
+This is an extension for the VS Code text editor.
+
 Within a project using React, Redux, and Typescript, this extension will convert a functional component into a component with state.
 
 ## Features
