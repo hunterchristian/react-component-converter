@@ -2,7 +2,7 @@
     "name": "react-component-converter",
     "displayName": "React component converter",
     "description": "Transforms a functional react component to a react component with state",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "hunterhodnett",
     "engines": {
         "vscode": "^1.0.0"
