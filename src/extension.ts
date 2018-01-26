@@ -9,35 +9,53 @@ const DEFAULT_PROPS_NAME = 'OwnProps';
 const getRenderFunctionStartPos = (text: string): number => {
     const firstSearchPatternResult = text.indexOf('=> {');
     const secondSearchPatternResult = text.indexOf('=>{');
+    const thirdSearchPatternResult = text.indexOf('=> (');
+    const fourthSearchPatternResult = text.indexOf('=>(');
 
-    if (firstSearchPatternResult === -1 &&
-        secondSearchPatternResult === -1) {
-        return -1;
+    if (firstSearchPatternResult !== -1) {
+        return firstSearchPatternResult + 3;
     }
-
-    return firstSearchPatternResult !== -1
-        ? firstSearchPatternResult + 3
-        : secondSearchPatternResult + 2;
+    if (secondSearchPatternResult !== -1) {
+        return secondSearchPatternResult + 2;
+    }
+    if (thirdSearchPatternResult !== -1) {
+        return thirdSearchPatternResult + 3;
+    }
+    if (fourthSearchPatternResult !== -1) {
+        return fourthSearchPatternResult + 2;
+    }
 }
 
 const getRenderFunctionEndPos = (text: string): number =>
-    text.lastIndexOf('}');
+    text.lastIndexOf('}') !== -1
+        ? text.lastIndexOf('}')
+        : text.lastIndexOf(')');
 
-const getRenderFunction = (component: string): string =>
-    component.substring(getRenderFunctionStartPos(component), getRenderFunctionEndPos(component) + 1);
+const getRenderFunction = (component: string): string => {
+    const lines = component
+        .substring(getRenderFunctionStartPos(component) + 1, getRenderFunctionEndPos(component))
+        .trim()
+        .split('\n');
+
+    let formattedStr = '';
+    for (let line of lines) {
+        formattedStr += `\t${line}\n`;
+    }
+
+    return formattedStr;
+}
 
 const isFunctionalReactComponent = (component: string): boolean => {
     const componentLines = component.split('\n');
     const firstLine = componentLines[0];
     const lastLine = componentLines[componentLines.length - 1];
 
-    const startPos = getRenderFunctionStartPos(firstLine);
-    const endPos = getRenderFunctionEndPos(component);
+    const startPos = getRenderFunctionStartPos(component);
+    const endPos = getRenderFunctionEndPos(lastLine);
     const lastLineHasBracket = getRenderFunctionEndPos(lastLine) > -1;
 
     return startPos > -1 &&
         endPos > -1 &&
-        startPos < endPos &&
         lastLineHasBracket;
 }
 
@@ -61,7 +79,7 @@ export function activate(context: vscode.ExtensionContext) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
     // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
+    let disposable = vscode.commands.registerCommand('extension.convertComponent', () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             return; // No open text editor

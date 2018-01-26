@@ -5,20 +5,20 @@
     "version": "0.0.1",
     "publisher": "hunterhodnett",
     "engines": {
-        "vscode": "^1.15.0"
+        "vscode": "^1.0.0"
     },
     "categories": [
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onCommand:extension.convertComponent"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.sayHello",
-                "title": "Hello World"
+                "command": "extension.convertComponent",
+                "title": "React component converter"
             }
         ]
     },
